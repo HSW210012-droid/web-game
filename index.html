@@ -1,53 +1,62 @@
-<!DOCTYPE html>
+ㄏ<!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
 <meta charset="UTF-8">
+
+<!-- 網頁標題（瀏覽器分頁上顯示） -->
 <title>打地鼠小遊戲</title>
 
 <style>
+    /* 整個網頁的基本樣式 */
     body {
-        font-family: Arial, sans-serif;
-        background-color: #f2f2f2;
-        text-align: center;
+        font-family: Arial, sans-serif;   /* 字型 */
+        background-color: #f2f2f2;        /* 背景顏色 */
+        text-align: center;               /* 文字置中 */
     }
 
+    /* 標題樣式 */
     h1 {
         margin-top: 20px;
     }
 
+    /* 分數與時間顯示區 */
     #info {
         font-size: 20px;
         margin: 10px;
     }
 
+    /* 遊戲區塊（九宮格） */
     #game {
         width: 300px;
-        margin: 20px auto;
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 10px;
+        margin: 20px auto;                /* 置中 */
+        display: grid;                    /* 使用 grid 排版 */
+        grid-template-columns: repeat(3, 1fr); /* 3 欄 */
+        gap: 10px;                        /* 格子間距 */
     }
 
+    /* 地洞樣式 */
     .hole {
         width: 90px;
         height: 90px;
-        background-color: #8b5a2b;
-        border-radius: 50%;
+        background-color: #8b5a2b;        /* 土的顏色 */
+        border-radius: 50%;               /* 變成圓形 */
         position: relative;
-        overflow: hidden;
+        overflow: hidden;                /* 超出部分隱藏 */
     }
 
+    /* 地鼠圖片 */
     .mole {
         width: 80px;
         height: 80px;
         position: absolute;
         bottom: -5px;
         left: 5px;
-        display: none;
-        cursor: pointer;
-        user-select: none;
+        display: none;                   /* 預設隱藏 */
+        cursor: pointer;                 /* 滑鼠變手指 */
+        user-select: none;               /* 不能反白 */
     }
 
+    /* 按鈕樣式 */
     button {
         padding: 10px 20px;
         font-size: 16px;
@@ -58,13 +67,19 @@
 
 <body>
 
+<!-- 遊戲標題 -->
 <h1>🐹 打地鼠小遊戲</h1>
+
+<!-- 分數與倒數時間 -->
 <div id="info">
-    分數：<span id="score">0</span>　
+    分數：<span id="score">0</span>
+    　
     剩餘時間：<span id="time">30</span>
 </div>
 
+<!-- 遊戲主區塊（9 個洞） -->
 <div id="game">
+    <!-- 每個洞裡面放一張地鼠圖片 -->
     <div class="hole"><img class="mole" src="123.png"></div>
     <div class="hole"><img class="mole" src="123.png"></div>
     <div class="hole"><img class="mole" src="123.png"></div>
@@ -76,61 +91,108 @@
     <div class="hole"><img class="mole" src="123.png"></div>
 </div>
 
+<!-- 開始遊戲按鈕 -->
 <button onclick="startGame()">開始遊戲</button>
 
 <script>
+/* ===== 遊戲用的變數 ===== */
+
+// 目前分數
 let score = 0;
+
+// 剩餘時間（秒）
 let timeLeft = 30;
+
+// 計時器（倒數時間）
 let gameTimer = null;
+
+// 地鼠出現的計時器
 let moleTimer = null;
 
+// 取得畫面上的分數顯示區
 const scoreText = document.getElementById("score");
+
+// 取得畫面上的時間顯示區
 const timeText = document.getElementById("time");
+
+// 取得所有地鼠圖片
 const moles = document.querySelectorAll(".mole");
 
+/* ===== 開始遊戲 ===== */
 function startGame() {
+
+    // 重置分數與時間
     score = 0;
     timeLeft = 30;
+
+    // 更新畫面上的數字
     scoreText.textContent = score;
     timeText.textContent = timeLeft;
 
+    // 如果之前有計時器，先清掉
     clearInterval(gameTimer);
     clearInterval(moleTimer);
 
+    // 每 1 秒執行一次（倒數計時）
     gameTimer = setInterval(() => {
         timeLeft--;
         timeText.textContent = timeLeft;
+
+        // 時間到就結束遊戲
         if (timeLeft <= 0) {
             endGame();
         }
     }, 1000);
 
+    // 每 0.8 秒讓地鼠隨機出現
     moleTimer = setInterval(showMole, 800);
 }
 
+/* ===== 顯示隨機地鼠 ===== */
 function showMole() {
+
+    // 先把所有地鼠藏起來
     moles.forEach(mole => mole.style.display = "none");
+
+    // 隨機選一隻地鼠
     const random = Math.floor(Math.random() * moles.length);
+
+    // 顯示選中的地鼠
     moles[random].style.display = "block";
 }
 
+/* ===== 點擊地鼠 ===== */
 moles.forEach(mole => {
     mole.addEventListener("click", () => {
+
+        // 確認地鼠真的有出現
         if (mole.style.display === "block") {
+
+            // 分數 +1
             score++;
             scoreText.textContent = score;
+
+            // 點到後立刻消失
             mole.style.display = "none";
         }
     });
 });
 
+/* ===== 結束遊戲 ===== */
 function endGame() {
+
+    // 停止所有計時器
     clearInterval(gameTimer);
     clearInterval(moleTimer);
+
+    // 把所有地鼠藏起來
     moles.forEach(mole => mole.style.display = "none");
+
+    // 跳出結束提示
     alert("遊戲結束！你的分數是：" + score);
 }
 </script>
 
 </body>
 </html>
+

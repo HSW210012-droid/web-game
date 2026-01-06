@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>打地鼠小遊戲</title>
+
 <style>
     body {
         font-family: Arial, sans-serif;
@@ -14,7 +15,7 @@
         margin-top: 20px;
     }
 
-    #score, #time {
+    #info {
         font-size: 20px;
         margin: 10px;
     }
@@ -33,18 +34,18 @@
         background-color: #8b5a2b;
         border-radius: 50%;
         position: relative;
-        cursor: pointer;
+        overflow: hidden;
     }
 
     .mole {
-        width: 70px;
-        height: 70px;
-        background-color: #555;
-        border-radius: 50%;
+        width: 80px;
+        height: 80px;
         position: absolute;
-        bottom: 10px;
-        left: 10px;
+        bottom: -5px;
+        left: 5px;
         display: none;
+        cursor: pointer;
+        user-select: none;
     }
 
     button {
@@ -54,22 +55,25 @@
     }
 </style>
 </head>
+
 <body>
 
 <h1>🐹 打地鼠小遊戲</h1>
-<div id="score">分數：0</div>
-<div id="time">剩餘時間：30</div>
+<div id="info">
+    分數：<span id="score">0</span>　
+    剩餘時間：<span id="time">30</span>
+</div>
 
 <div id="game">
-    <div class="hole"><div class="mole"></div></div>
-    <div class="hole"><div class="mole"></div></div>
-    <div class="hole"><div class="mole"></div></div>
-    <div class="hole"><div class="mole"></div></div>
-    <div class="hole"><div class="mole"></div></div>
-    <div class="hole"><div class="mole"></div></div>
-    <div class="hole"><div class="mole"></div></div>
-    <div class="hole"><div class="mole"></div></div>
-    <div class="hole"><div class="mole"></div></div>
+    <div class="hole"><img class="mole" src="123.png"></div>
+    <div class="hole"><img class="mole" src="123.png"></div>
+    <div class="hole"><img class="mole" src="123.png"></div>
+    <div class="hole"><img class="mole" src="123.png"></div>
+    <div class="hole"><img class="mole" src="123.png"></div>
+    <div class="hole"><img class="mole" src="123.png"></div>
+    <div class="hole"><img class="mole" src="123.png"></div>
+    <div class="hole"><img class="mole" src="123.png"></div>
+    <div class="hole"><img class="mole" src="123.png"></div>
 </div>
 
 <button onclick="startGame()">開始遊戲</button>
@@ -77,25 +81,25 @@
 <script>
 let score = 0;
 let timeLeft = 30;
-let gameTimer;
-let moleTimer;
+let gameTimer = null;
+let moleTimer = null;
 
-const scoreDisplay = document.getElementById("score");
-const timeDisplay = document.getElementById("time");
+const scoreText = document.getElementById("score");
+const timeText = document.getElementById("time");
 const moles = document.querySelectorAll(".mole");
 
 function startGame() {
     score = 0;
     timeLeft = 30;
-    scoreDisplay.textContent = "分數：0";
-    timeDisplay.textContent = "剩餘時間：30";
+    scoreText.textContent = score;
+    timeText.textContent = timeLeft;
 
     clearInterval(gameTimer);
     clearInterval(moleTimer);
 
     gameTimer = setInterval(() => {
         timeLeft--;
-        timeDisplay.textContent = "剩餘時間：" + timeLeft;
+        timeText.textContent = timeLeft;
         if (timeLeft <= 0) {
             endGame();
         }
@@ -106,15 +110,15 @@ function startGame() {
 
 function showMole() {
     moles.forEach(mole => mole.style.display = "none");
-    const randomMole = moles[Math.floor(Math.random() * moles.length)];
-    randomMole.style.display = "block";
+    const random = Math.floor(Math.random() * moles.length);
+    moles[random].style.display = "block";
 }
 
 moles.forEach(mole => {
     mole.addEventListener("click", () => {
         if (mole.style.display === "block") {
             score++;
-            scoreDisplay.textContent = "分數：" + score;
+            scoreText.textContent = score;
             mole.style.display = "none";
         }
     });

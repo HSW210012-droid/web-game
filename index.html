@@ -2,168 +2,75 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="UTF-8">
-<title>打地鼠小遊戲</title>
-
+<title>打地鼠遊戲</title>
 <style>
     body {
         font-family: Arial, sans-serif;
-        background-color: #f2f2f2;
+        background-color: #f0f8ff;
         text-align: center;
     }
 
     h1 {
         margin-top: 20px;
+        color: #333;
     }
 
-    #info {
-        font-size: 20px;
-        margin: 10px;
-    }
-
-    /* 遊戲九宮格 */
     #game {
-        width: 300px;
-        margin: 20px auto;
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 10px;
+        grid-template-columns: repeat(3, 100px);
+        grid-gap: 15px;
+        justify-content: center;
+        margin-top: 30px;
     }
 
-    /* 地洞 */
     .hole {
-        width: 90px;
-        height: 90px;
-        background-color: #8b5a2b;
+        width: 100px;
+        height: 100px;
+        background-color: #7cfc00;
         border-radius: 50%;
         position: relative;
+        cursor: pointer;
         overflow: hidden;
     }
 
-    /* 地鼠本體 */
     .mole {
         width: 80px;
         height: 80px;
-        background-color: #c18f59;
-        border-radius: 50%;
         position: absolute;
-        bottom: -5px;
-        left: 5px;
-        display: none;
-        cursor: pointer;
-    }
-
-    /* 眼睛 */
-    .eye {
-        width: 8px;
-        height: 8px;
-        background-color: black;
+        bottom: -100px;
+        left: 50%;
+        transform: translateX(-50%);
+        transition: bottom 0.3s;
         border-radius: 50%;
-        position: absolute;
-        top: 25px;
     }
 
-    .eye.left {
-        left: 22px;
+    .mole.show {
+        bottom: 10px;
     }
 
-    .eye.right {
-        right: 22px;
-    }
-
-    /* 鼻子 */
-    .nose {
-        width: 14px;
-        height: 10px;
-        background-color: pink;
-        border-radius: 50%;
-        position: absolute;
-        top: 38px;
-        left: 33px;
-    }
-
-    button {
-        padding: 10px 20px;
-        font-size: 16px;
-        cursor: pointer;
+    #scoreboard {
+        margin-top: 20px;
+        font-size: 20px;
     }
 </style>
 </head>
-
 <body>
-
-<h1>🐹 打地鼠小遊戲</h1>
-
-<div id="info">
-    分數：<span id="score">0</span>
-    剩餘時間：<span id="time">20</span>
-</div>
-
-<!-- 九宮格 -->
+<h1>打地鼠遊戲</h1>
+<div id="scoreboard">分數: 0</div>
 <div id="game">
-    <div class="hole"><div class="mole"><div class="eye left"></div><div class="eye right"></div><div class="nose"></div></div></div>
-    <div class="hole"><div class="mole"><div class="eye left"></div><div class="eye right"></div><div class="nose"></div></div></div>
-    <div class="hole"><div class="mole"><div class="eye left"></div><div class="eye right"></div><div class="nose"></div></div></div>
-    <div class="hole"><div class="mole"><div class="eye left"></div><div class="eye right"></div><div class="nose"></div></div></div>
-    <div class="hole"><div class="mole"><div class="eye left"></div><div class="eye right"></div><div class="nose"></div></div></div>
-    <div class="hole"><div class="mole"><div class="eye left"></div><div class="eye right"></div><div class="nose"></div></div></div>
-    <div class="hole"><div class="mole"><div class="eye left"></div><div class="eye right"></div><div class="nose"></div></div></div>
-    <div class="hole"><div class="mole"><div class="eye left"></div><div class="eye right"></div><div class="nose"></div></div></div>
-    <div class="hole"><div class="mole"><div class="eye left"></div><div class="eye right"></div><div class="nose"></div></div></div>
+    <div class="hole"></div>
+    <div class="hole"></div>
+    <div class="hole"></div>
+    <div class="hole"></div>
+    <div class="hole"></div>
+    <div class="hole"></div>
+    <div class="hole"></div>
+    <div class="hole"></div>
+    <div class="hole"></div>
 </div>
-
-<button onclick="startGame()">開始遊戲</button>
 
 <script>
-let score = 0;
-let timeLeft = 20;
-let gameTimer = null;
-let moleTimer = null;
+    const holes = document.querySelectorAll('.hole');
+    let score = 0;
+    let lastHole;
 
-const scoreText = document.getElementById("score");
-const timeText = document.getElementById("time");
-const moles = document.querySelectorAll(".mole");
-
-function startGame() {
-    score = 0;
-    timeLeft = 20;
-    scoreText.textContent = score;
-    timeText.textContent = timeLeft;
-
-    clearInterval(gameTimer);
-    clearInterval(moleTimer);
-
-    gameTimer = setInterval(() => {
-        timeLeft--;
-        timeText.textContent = timeLeft;
-        if (timeLeft <= 0) endGame();
-    }, 1000);
-
-    moleTimer = setInterval(showMole, 800);
-}
-
-function showMole() {
-    moles.forEach(m => m.style.display = "none");
-    const r = Math.floor(Math.random() * moles.length);
-    moles[r].style.display = "block";
-}
-
-moles.forEach(mole => {
-    mole.addEventListener("click", () => {
-        if (mole.style.display === "block") {
-            score++;
-            scoreText.textContent = score;
-            mole.style.display = "none";
-        }
-    });
-});
-
-function endGame() {
-    clearInterval(gameTimer);
-    clearInterval(moleTimer);
-    moles.forEach(m => m.style.display = "none");
-    alert("遊戲結束！你的分數是：" + score);
-}
-</script>
-
-</body>
-</html>

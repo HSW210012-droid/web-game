@@ -5,7 +5,7 @@
 <title>打地鼠小遊戲</title>
 
 <style>
-    /* ===== 頁面基本設定 ===== */
+    /* ===== 基本頁面設定 ===== */
     body {
         font-family: Arial, sans-serif;
         background-color: #f2f2f2;
@@ -16,7 +16,7 @@
         margin-top: 20px;
     }
 
-    /* 分數與時間 */
+    /* 分數與時間顯示 */
     #info {
         font-size: 20px;
         margin: 10px;
@@ -41,23 +41,22 @@
         overflow: hidden;
     }
 
-    /* ===== 圓形地鼠圖片 ===== */
+    /* ===== 圓形地鼠圖片（關鍵） ===== */
     .mole {
         width: 80px;
         height: 80px;
         position: absolute;
         bottom: -5px;
         left: 5px;
-        display: none;          /* 預設不顯示 */
+        display: none;
         cursor: pointer;
         user-select: none;
 
-        border-radius: 50%;    /* ⭐ 變成圓形 */
-        object-fit: cover;    /* ⭐ 圖片填滿圓形 */
+        border-radius: 50%;   /* 變圓形 */
+        object-fit: cover;   /* 填滿圓形 */
         background-color: white;
     }
 
-    /* 按鈕 */
     button {
         padding: 10px 20px;
         font-size: 16px;
@@ -73,20 +72,20 @@
 <div id="info">
     分數：<span id="score">0</span>
     　
-    剩餘時間：<span id="time">30</span>
+    剩餘時間：<span id="time">20</span>
 </div>
 
-<!-- 九宮格遊戲區 -->
+<!-- 九宮格 -->
 <div id="game">
-    <div class="hole"><img class="mole" src="images.png"></div>
-    <div class="hole"><img class="mole" src="images.png"></div>
-    <div class="hole"><img class="mole" src="images.png"></div>
-    <div class="hole"><img class="mole" src="images.png"></div>
-    <div class="hole"><img class="mole" src="images.png"></div>
-    <div class="hole"><img class="mole" src="images.png"></div>
-    <div class="hole"><img class="mole" src="images.png"></div>
-    <div class="hole"><img class="mole" src="images.png"></div>
-    <div class="hole"><img class="mole" src="images.png"></div>
+    <div class="hole"><img class="mole" src="images.png" alt="mole"></div>
+    <div class="hole"><img class="mole" src="images.png" alt="mole"></div>
+    <div class="hole"><img class="mole" src="images.png" alt="mole"></div>
+    <div class="hole"><img class="mole" src="images.png" alt="mole"></div>
+    <div class="hole"><img class="mole" src="images.png" alt="mole"></div>
+    <div class="hole"><img class="mole" src="images.png" alt="mole"></div>
+    <div class="hole"><img class="mole" src="images.png" alt="mole"></div>
+    <div class="hole"><img class="mole" src="images.png" alt="mole"></div>
+    <div class="hole"><img class="mole" src="images.png" alt="mole"></div>
 </div>
 
 <button onclick="startGame()">開始遊戲</button>
@@ -94,11 +93,10 @@
 <script>
 /* ===== 遊戲變數 ===== */
 let score = 0;
-let timeLeft = 30;
+let timeLeft = 20;
 let gameTimer = null;
 let moleTimer = null;
 
-// 取得畫面元素
 const scoreText = document.getElementById("score");
 const timeText = document.getElementById("time");
 const moles = document.querySelectorAll(".mole");
@@ -106,7 +104,7 @@ const moles = document.querySelectorAll(".mole");
 /* ===== 開始遊戲 ===== */
 function startGame() {
     score = 0;
-    timeLeft = 30;
+    timeLeft = 20;
     scoreText.textContent = score;
     timeText.textContent = timeLeft;
 
@@ -122,18 +120,15 @@ function startGame() {
         }
     }, 1000);
 
-    // 地鼠出現速度
+    // 地鼠出現
     moleTimer = setInterval(showMole, 800);
 }
 
 /* ===== 隨機顯示地鼠 ===== */
 function showMole() {
-    // 全部先隱藏
     moles.forEach(mole => mole.style.display = "none");
-
-    // 隨機選一個
-    const random = Math.floor(Math.random() * moles.length);
-    moles[random].style.display = "block";
+    const randomIndex = Math.floor(Math.random() * moles.length);
+    moles[randomIndex].style.display = "block";
 }
 
 /* ===== 點擊地鼠 ===== */

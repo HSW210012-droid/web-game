@@ -2,7 +2,7 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="UTF-8">
-<title>鬼抓人遊戲</title>
+<title>鬼抓人遊戲 - 升級版</title>
 <style>
     body {
         background-color: #222;
@@ -21,8 +21,9 @@
 </head>
 <body>
 
-<h1>👻 鬼抓人遊戲</h1>
-<p>使用 ⬆⬇⬅➡ 移動，被鬼抓到就結束！</p>
+<h1>👻 鬼抓人遊戲 - 升級版</h1>
+<p>使用 ⬆⬇⬅➡ 移動，被鬼抓到就結束！時間越長，鬼越多！</p>
+<p id="time">生存時間: 0 秒</p>
 
 <canvas id="game" width="500" height="400"></canvas>
 
@@ -38,15 +39,13 @@ const player = {
     speed: 5
 };
 
-// 鬼
-const ghost = {
-    x: 50,
-    y: 50,
-    size: 20,
-    speed: 2
-};
+// 鬼列表
+let ghosts = [
+    {x: 50, y: 50, size: 20, speed: 2}
+];
 
 let gameOver = false;
+let startTime = Date.now();
 
 // 鍵盤控制
 const keys = {};
@@ -64,18 +63,22 @@ function movePlayer() {
     player.y = Math.max(0, Math.min(canvas.height - player.size, player.y));
 }
 
-function moveGhost() {
-    if (ghost.x < player.x) ghost.x += ghost.speed;
-    if (ghost.x > player.x) ghost.x -= ghost.speed;
-    if (ghost.y < player.y) ghost.y += ghost.speed;
-    if (ghost.y > player.y) ghost.y -= ghost.speed;
+function moveGhosts() {
+    ghosts.forEach(ghost => {
+        if (ghost.x < player.x) ghost.x += ghost.speed;
+        if (ghost.x > player.x) ghost.x -= ghost.speed;
+        if (ghost.y < player.y) ghost.y += ghost.speed;
+        if (ghost.y > player.y) ghost.y -= ghost.speed;
+    });
 }
 
 function checkCollision() {
-    const dx = player.x - ghost.x;
-    const dy = player.y - ghost.y;
-    const distance = Math.sqrt(dx * dx + dy * dy);
-    return distance < player.size;
+    return ghosts.some(ghost => {
+        const dx = player.x - ghost.x;
+        const dy = player.y - ghost.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        return distance < player.size;
+    });
 }
 
 function draw() {
@@ -87,20 +90,39 @@ function draw() {
 
     // 鬼
     ctx.fillStyle = "red";
-    ctx.fillRect(ghost.x, ghost.y, ghost.size, ghost.size);
+    ghosts.forEach(ghost => ctx.fillRect(ghost.x, ghost.y, ghost.size, ghost.size));
+}
+
+function updateTime() {
+    const elapsed = Math.floor((Date.now() - startTime) / 1000);
+    document.getElementById("time").innerText = `生存時間: ${elapsed} 秒`;
+
+    // 每 10 秒增加一隻鬼
+    if (elapsed > 0 && elapsed % 10 === 0) {
+        if (ghosts.length < elapsed / 10 + 1) { // 確保只加一次
+            ghosts.push({
+                x: Math.random() * (canvas.width - 20),
+                y: Math.random() * (canvas.height - 20),
+                size: 20,
+                speed: 2 + Math.random() // 隨機速度
+            });
+        }
+    }
 }
 
 function gameLoop() {
     if (gameOver) return;
 
     movePlayer();
-    moveGhost();
+    moveGhosts();
     draw();
+    updateTime();
 
     if (checkCollision()) {
         gameOver = true;
         setTimeout(() => {
-            alert("👻 你被鬼抓到了！遊戲結束！");
+            const survived = Math.floor((Date.now() - startTime)/1000);
+            alert(`👻 你被鬼抓到了！生存時間: ${survived} 秒`);
             location.reload();
         }, 100);
     }
